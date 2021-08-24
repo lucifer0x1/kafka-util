@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.listener.*;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,29 +16,13 @@ import org.springframework.stereotype.Service;
  * Date 2021/8/24
  * Author wangxiyue.xy@163.com
  */
-@Service
-public class DynamicKafkaListener {
-
-    Logger log = LoggerFactory.getLogger(DynamicKafkaListener.class);
-
-    @Autowired
-    ConcurrentKafkaListenerContainerFactory factory;
+@Component
+public class DynamicKafkaListener implements ConsumerAwareMessageListener<String, String> {
 
 
-    public void changeTopic( String topic){
-        MessageListenerContainer container =  factory.createContainer(topic);
-        container.setAutoStartup(true);
-        log.info("change topic ===> {}" , topic );
-        container.setupMessageListener(new ConsumerAwareMessageListener<String,String>() {
-
-            @Override
-            public void onMessage(ConsumerRecord<String, String> data, Consumer<?, ?> consumer) {
-                System.out.println(data.key() + "===>" + data.value());
-                System.out.println(data.topic());
-            }
-        });
-        container.start();
+    @Override
+    public void onMessage(ConsumerRecord<String, String> data, Consumer<?, ?> consumer) {
+        System.out.println(data.key() + "===>" + data.value());
+        System.out.println(data.topic());
     }
-
-
 }
