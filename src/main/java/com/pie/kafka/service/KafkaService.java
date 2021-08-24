@@ -52,7 +52,8 @@ public class KafkaService {
             log.info("Find topic by [{}]",topic);
             MessageListenerContainer container  = listenerMaps.get(topic);
             container.stop();
-            log.info("Topic [{}] status is {}",container.isRunning());
+            log.info("Topic [{}] status is {}",topic,container.isRunning());
+            listenerMaps.remove(topic);
         }else {
             log.info("Can not find topic [{}]",topic);
         }
